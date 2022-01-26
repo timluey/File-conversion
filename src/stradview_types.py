@@ -4,7 +4,7 @@ import attr
 
 @attr.s(auto_attribs=True)
 class StradViewImage:
-    pass
+    slice_index: int = 0
 
 
 @attr.s(auto_attribs=True)

@@ -1,6 +1,6 @@
 import os
 from typing import Dict, List, Callable
-from stradview_types import StradViewData
+from stradview_types import StradViewData, StradViewImage
 
 
 # def make_my_value(x: int, y: float) -> str:
@@ -49,10 +49,17 @@ def parse_stradview_file(path: str) -> StradViewData:
             setattr(result, attr_name, value)
         return parse
 
+    def parse_image(tokens: List[str]):
+        result.images.append(StradViewImage(
+
+        ))
+
     param_parsers: Dict[str, Callable[[List[str], None]]] = { 
         name: make_int_parser(name) for name in INT_PARAMETERS
     } | {
         name: make_bool_parser(name) for name in BOOLEAN_PARAMETERS
+    } | {
+        'IM': parse_image
     }
     
     file = open(path)
@@ -76,9 +83,7 @@ def parse_stradview_file(path: str) -> StradViewData:
             elif token_line[1]== 'false\n':
                 result.res_buf_dicom = False
         elif start_token == 'RES_DICOM_FRAME_LIST':
-            for i,line in enumerate (token_line):
-                if i<1: continue
-                result.res_dicom_frame_list.append(token_line[i])
+            result.res_dicom_frame_list = token_line[1:]
         elif start_token == 'RES_POS_REC':
             if token_line[1]=='true\n':
                 result.res_pos_rec = True
@@ -93,7 +98,7 @@ def parse_stradview_file(path: str) -> StradViewData:
         elif start_token == 'RES_CORRECTED_PRESSURE':
             if token_line[1]=='true\n':
                 result.res_corrected_pressure = True
-            elif token_line[1]== 'false\n':
+            elif token_line[1] == 'false\n':
                 result.res_corrected_pressure = False
         elif start_token == 'RES_CORRECTED_POS':
             if token_line[1]=='true\n':
