@@ -20,7 +20,7 @@ from stradview_types import StradViewData, StradViewImage
 # for x in original_list:
     # result.append(func(x))
 
-INT_PARAMETERS = [
+_INT_PARAMETERS = [
     'RES_BUF_FRAMES',
     'RES_BUF_HEIGHT',
     'RES_BUF_WIDTH',
@@ -41,7 +41,7 @@ INT_PARAMETERS = [
     'RES_OCCULSION_RANGE'
 ]
 
-BOOLEAN_PARAMETERS = [
+_BOOLEAN_PARAMETERS = [
     'RES_BUF_RF',
     'RES_BUF_DICOM',
     'RES_POS_REC',
@@ -56,7 +56,7 @@ BOOLEAN_PARAMETERS = [
     'RES_RADIANT_SHADOWS'
 ]
 
-FLOAT_PARAMETERS = [
+_FLOAT_PARAMETERS = [
     'RES_XTRANS',
     'RES_YTRANS',
     'RES_ZTRANS',
@@ -85,102 +85,106 @@ FLOAT_PARAMETERS = [
     'RES_LIGHTING_FRONT_SIDE'
 ]
 
-STRING_PARAMETERS = [
+_STRING_PARAMETERS = [
     'RES_BIN_IM_FILENAME',
     'RES_VERSION',
     'RES_DICOM_BMD_PHANTOM',
     'RES_BACKGROUND'
 ]
 
-LIST_PARAMETERS = [
-    'RES_DICOM_FRAME_LIST'
-]
+_ParserFunction = Callable[[StradViewData, List[str]], None]
+
+
+def _make_int_parser(name: str) -> _ParserFunction:
+    attr_name = name.lower()
+    def parse(result: StradViewData, tokens: List[str]):
+        value = int(tokens[0])
+        setattr(result, attr_name, value)
+
+    return parse
+
+
+def _make_bool_parser(name: str) -> _ParserFunction:
+    attr_name = name.lower()
+    def parse(result: StradViewData, tokens: List[str]):
+        if tokens[0]=='true\n':
+            value = True
+        elif tokens[0]== 'false\n':
+            value = False
+        else:
+            raise ValueError()
+        setattr(result, attr_name, value)
+    return parse
+
+
+def _make_float_parser(name: str) -> _ParserFunction:
+    attr_name = name.lower()
+    def parse(result: StradViewData, tokens: List[str]):
+        value = float(tokens[0])
+        setattr(result, attr_name, value)
+    return parse
+
+
+def _make_string_parser(name: str) -> _ParserFunction:
+    attr_name = name.lower()
+    def parse(result: StradViewData, tokens: List[str]):
+        value = tokens[0]
+        setattr(result, attr_name, value)
+
+    return parse
+
+
+def _parse_frame_list(result: StradViewData, token_line: List[str]):
+    result.res_dicom_frame_list = [int(t) for t in token_line]
+
+
+def _parse_image(result: StradViewData, tokens: List[str]):
+    print('TODO: parse object')
+    result.images.append(StradViewImage)
+
+
+def _parse_object(result: StradViewData, tokens: List[str]):
+    print('TODO: parse object')
+    pass
+
+
+def _parse_contour(result: StradViewData, tokens: List[str]):
+    print('TODO: parse contour')
+
+
+_PARSERS: Dict[str, _ParserFunction] = { 
+    name: _make_int_parser(name) for name in _INT_PARAMETERS
+} | {
+    name: _make_bool_parser(name) for name in _BOOLEAN_PARAMETERS
+} | {
+    name: _make_float_parser(name) for name in _FLOAT_PARAMETERS
+} | {
+    name: _make_string_parser(name) for name in _STRING_PARAMETERS
+} | {
+    'RES_DICOM_FRAME_LIST': _parse_frame_list,
+    'IM': _parse_image,
+    'OBJECT': _parse_object,
+    'CONT': _parse_contour
+} 
+
+
 def parse_stradview_file(path: str) -> StradViewData:
-    result = StradViewData()
-
-    def make_int_parser(name: str) -> Callable[[List[str]], None]:
-        attr_name = name.lower()
-        def parse(tokens: List[str]):
-            value = int(token_line[1])
-            setattr(result, attr_name, value)
-
-        return parse
-
-    def make_bool_parser(name: str) -> Callable[[List[str]], None]:
-        attr_name = name.lower()
-        def parse(tokens: List[str]):
-            if token_line[1]=='true\n':
-                value = True
-            elif token_line[1]== 'false\n':
-                value = False
-            setattr(result, attr_name, value)
-        return parse
-    
-    def make_float_parser(name: str) -> Callable[[List[str]], None]:
-        attr_name = name.lower()
-        def parse(tokens: List[str]):
-            value = float(token_line[1])
-            setattr(result, attr_name, value)
-        return parse
-
-    def make_string_parser(name: str) -> Callable[[List[str]], None]:
-        attr_name = name.lower()
-        def parse(tokens: List[str]):
-            value = token_line[1]
-            setattr(result, attr_name, value)
-
-        return parse
-
-    def make_list_parser(name: str) -> Callable[[List[str]], None]:
-        pass
-        attr_name = name.lower()
-        def parse(tokens: List[str]):
-            list = List[int]
-            for i,line in enumerate (token_line):
-                if i<1: continue
-                value=int(token_line[i])
-                List.append(value)
-            setattr(result, attr_name, List)
-                
-
-        return parse
-
-    def parse_image(tokens: List[str]):
-        result.images.append(StradViewImage)
-
-    param_parsers: Dict[str, Callable[[List[str], None]]] = { 
-        name: make_int_parser(name) for name in INT_PARAMETERS
-    } | {
-        name: make_bool_parser(name) for name in BOOLEAN_PARAMETERS
-    } | {
-        name: make_float_parser(name) for name in FLOAT_PARAMETERS
-    } | {
-        name: make_string_parser(name) for name in STRING_PARAMETERS
-    } | {
-        'IM': parse_image
-
-    } 
-    
     file = open(path)
     token_lines = [line.split(' ') for line in file.readlines()]
     skipped_tokens = set()
+    result = StradViewData()
 
-    for token_line in token_lines:
-        start_token = token_line[0]
+    for token_line_ in token_lines:
+        param_token = token_line_[0]
 
-        if start_token in param_parsers:
-            param_parsers[start_token](token_line)
-
-        elif start_token == 'RES_DICOM_FRAME_LIST':
-            for i,line in enumerate (token_line):
-                if i<1: continue
-                result.res_dicom_frame_list.append(token_line[i])
-
+        if param_token in _PARSERS:
+            _PARSERS[param_token](result, token_line_[1:])
         else:
-            skipped_tokens.add(start_token)
+            skipped_tokens.add(param_token)
 
     print(f"Ignored tokens: {', '.join(skipped_tokens)}")
     return result
+
 
 if __name__ == '__main__':
     test_file = 'case3.sw'
