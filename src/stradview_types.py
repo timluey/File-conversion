@@ -1,10 +1,14 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import attr
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, frozen=True)
 class StradViewImage:
-    slice_index: int = 0
+    time: int = 0
+    location: Tuple[float, float, float] = (0.0, 0.0, 0.0)
+    azimuth: float = 0.0
+    elevation: float = 0.0
+    roll: float = 0.0
 
 
 @attr.s(auto_attribs=True)

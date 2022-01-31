@@ -140,7 +140,10 @@ def _parse_frame_list(result: StradViewData, token_line: List[str]):
 
 def _parse_image(result: StradViewData, tokens: List[str]):
     print('TODO: parse object')
-    result.images.append(StradViewImage)
+    result.images.append(StradViewImage(
+        time=int(tokens[0]),
+        location=(float(tokens[1]),),
+    ))
 
 
 def _parse_object(result: StradViewData, tokens: List[str]):
