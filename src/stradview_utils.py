@@ -184,7 +184,6 @@ def parse_stradview_file(path: str) -> StradViewData:
 
 if __name__ == '__main__':
     test_file = 'case3.sw'
-    test_file_name = r'File-conversion github\test_data\case3.sw'
-    os.path.join(os.getcwd(), 'test_data', test_file)
+    test_file_name = os.path.join(os.getcwd(), 'test_data', test_file)
     data = parse_stradview_file(test_file_name)
     print(data)
