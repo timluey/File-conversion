@@ -1,6 +1,6 @@
 import os
 from typing import Dict, List, Callable
-from stradview_types import StradViewData, StradViewImage
+from stradview_types import StradViewContour, StradViewData, StradViewImage, StradViewObject
 
 
 # def make_my_value(x: int, y: float) -> str:
@@ -139,21 +139,43 @@ def _parse_frame_list(result: StradViewData, token_line: List[str]):
 
 
 def _parse_image(result: StradViewData, tokens: List[str]):
-    print('TODO: parse object')
+    
     result.images.append(StradViewImage(
         time=int(tokens[0]),
-        location=(float(tokens[1]),),
+        location=(float(tokens[1]),float(tokens[2]),float(tokens[3])),
+        azimuth=float(tokens[4]),
+        elevation=float(tokens[5]),
+        roll=float(tokens[6])
     ))
 
 
 def _parse_object(result: StradViewData, tokens: List[str]):
-    print('TODO: parse object')
-    pass
+    
+    result.objects.append(StradViewObject(
+        number= int(tokens[0]),
+        solid= int(tokens[1]),
+        rgb= (float(tokens[2]),float(tokens[3]),float(tokens[4])),
+        alpha= float(tokens[5]),
+        rough= float(tokens[6]),
+        metal= float(tokens[7]),
+        name= tokens[8] + ' ' + tokens[9]        
+    ))
 
 
 def _parse_contour(result: StradViewData, tokens: List[str]):
-    print('TODO: parse contour')
-
+    def _listtotuple(tokens):
+        pass
+            #it = iter(tokens)
+            #result = [(x, next(it)) for x in it ]
+            #return result
+            
+    result.contours.append(StradViewContour(
+        obj= int(tokens[0]),
+        frame= int(tokens[1]),
+        closed= int(tokens[2]),
+        xy = [float(t) for t in tokens[3:]]
+    ))
+    
 
 _PARSERS: Dict[str, _ParserFunction] = { 
     name: _make_int_parser(name) for name in _INT_PARAMETERS
