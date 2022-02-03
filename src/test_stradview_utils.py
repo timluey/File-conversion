@@ -3,6 +3,7 @@ import unittest   # The test framework
 from stradview_utils import parse_stradview_file
 
 
+
 class TestStradviewUtils(unittest.TestCase):
     def test_parse_stradview_file(self):
         test_file = 'case3.sw'
@@ -16,6 +17,7 @@ class TestStradviewUtils(unittest.TestCase):
         self.assertEqual(data.res_thickness_scale_hu, 20)
         self.assertEqual(data.res_pos_manual_angle, 0)
         self.assertEqual(len(data.res_dicom_frame_list), 83)
+        
 
         #Testing image parameters
         self.assertEqual(len(data.images), 83)
@@ -36,7 +38,9 @@ class TestStradviewUtils(unittest.TestCase):
         self.assertEqual(data.contours[1].closed, 1)
         self.assertEqual(data.contours[20].frame, 24)
         self.assertEqual(data.contours[80].obj, 1)
+        self.assertEqual(data.contours[0].xy[0], (177.99, 335.29))
         self.assertEqual(len(data.contours[31].xy), 5)
+        
 
 if __name__ == '__main__':
     unittest.main()

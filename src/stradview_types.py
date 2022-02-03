@@ -18,6 +18,10 @@ class StradViewImage:
 
 @attr.s(auto_attribs=True, frozen=True)
 class StradViewObject:
+    """
+        The number n of the object, whether it is solid (0 or 1), the color r,g,b, transparency alpha, roughness rough
+        and metallic value metal, and the name.
+    """
     number: int = 0
     solid: int = 0
     rgb: Tuple[float, float, float] = (0.0, 0.0, 0.0)
@@ -25,19 +29,19 @@ class StradViewObject:
     rough: float = 0.0
     metal: float = 0.0
     name: str = ''
-    """The number n of the object, whether it is solid (0 or 1), the color r,g,b, transparency alpha, roughness rough
-    and metallic value metal, and the name."""
 
 
 @attr.s(auto_attribs=True, frozen=True)
 class StradViewContour:
+    """
+        The number of the object o which contains this contour, the frame f in which it was defined, whether the contour
+        is closed (0 or 1) and the x and y locations, in pixels from the top left corner of the frame, of the contour vertices.
+    """
     obj: int = 0
     frame: int = 0
     closed: int = 0
-    #xy: List[Tuple[float,float]] = [(0.0,0.0)]
-    xy: List[float] = []
-    """The number of the object o which contains this contour, the frame f in which it was defined, whether the contour
-    is closed (0 or 1) and the x and y locations, in pixels from the top left corner of the frame, of the contour vertices."""
+    xy: List[Tuple[float,float]] = [(0.0,0.0)]
+    
 
 @attr.s(auto_attribs=True)
 class StradViewData:
