@@ -163,17 +163,11 @@ def _parse_object(result: StradViewData, tokens: List[str]):
 
 
 def _parse_contour(result: StradViewData, tokens: List[str]):
-    def _listtotuple(tokens):
-        pass
-            #it = iter(tokens)
-            #result = [(x, next(it)) for x in it ]
-            #return result
-            
     result.contours.append(StradViewContour(
-        obj= int(tokens[0]),
-        frame= int(tokens[1]),
-        closed= int(tokens[2]),
-        xy = [float(t) for t in tokens[3:]]
+        obj = int(tokens[0]),
+        frame = int(tokens[1]),
+        closed = int(tokens[2]),
+        xy = [(float(x), float(y)) for x, y in zip(tokens[3::2], tokens[4::2])]
     ))
     
 
@@ -194,8 +188,10 @@ _PARSERS: Dict[str, _ParserFunction] = {
 
 
 def parse_stradview_file(path: str) -> StradViewData:
-    file = open(path)
-    token_lines = [line.split(' ') for line in file.readlines()]
+
+    with open(path) as file:
+        token_lines = [line.split(' ') for line in file.readlines()]
+
     skipped_tokens = set()
     result = StradViewData()
 

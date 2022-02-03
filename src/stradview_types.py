@@ -4,14 +4,16 @@ import attr
 
 @attr.s(auto_attribs=True, frozen=True)
 class StradViewImage:
+    """
+        The time (in 100 ns intervals), location x,y,z (in cm) and Euler angles (in degrees) of the position sensor
+        at the point this image was recorded.The probe calibration values are also needed for conversion to the image 
+        coordinate system.If no positional information was recorded (RES_POS_REC false), this line only contains the time.
+    """
     time: int = 0
     location: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     azimuth: float = 0.0
     elevation: float = 0.0
     roll: float = 0.0
-    """The time (in 100 ns intervals), location x,y,z (in cm) and Euler angles (in degrees) of the position sensor
-    at the point this image was recorded.The probe calibration values are also needed for conversion to the image 
-    coordinate system.If no positional information was recorded (RES_POS_REC false), this line only contains the time."""
 
 
 @attr.s(auto_attribs=True, frozen=True)
