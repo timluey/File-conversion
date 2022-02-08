@@ -1,7 +1,6 @@
 import os
-import unittest   # The test framework
+import unittest
 from stradview_utils import parse_stradview_file
-
 
 
 class TestStradviewUtils(unittest.TestCase):
@@ -9,7 +8,10 @@ class TestStradviewUtils(unittest.TestCase):
         test_file = 'case3.sw'
         test_file_name = os.path.join(os.getcwd(), 'test_data', test_file)
         data = parse_stradview_file(test_file_name)
-
+        
+        file=open(test_file_name)
+        token_lines = [line.split(' ') for line in file.readlines()]
+        
         #Testing parameters
         self.assertEqual(data.res_buf_frames, 83)
         self.assertEqual(data.res_corrected_pos, False)
@@ -26,6 +28,7 @@ class TestStradviewUtils(unittest.TestCase):
         self.assertEqual(data.images[59].time, 59)
         self.assertEqual(data.images[80].roll, 0)
 
+
         #Testing Object parameters
         self.assertEqual(len(data.objects), 18)
         self.assertEqual(data.objects[1].solid, 1)
@@ -40,7 +43,13 @@ class TestStradviewUtils(unittest.TestCase):
         self.assertEqual(data.contours[80].obj, 1)
         self.assertEqual(data.contours[0].xy[0], (177.99, 335.29))
         self.assertEqual(len(data.contours[31].xy), 5)
+        xy_values = [(float(x), float(y)) for x, y in zip(token_lines[157][4::2], token_lines[157][5::2])]
+        self.assertEqual(data.contours[0].xy, xy_values)
         
+        
+        
+
+        file.close()
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,24 +2,6 @@ import os
 from typing import Dict, List, Callable
 from stradview_types import StradViewContour, StradViewData, StradViewImage, StradViewObject
 
-
-# def make_my_value(x: int, y: float) -> str:
-    # return ''
-
-# Callable[[int, float], str]
-
-# original_list = [1, 2, 4]
-# def func(value): 
-    # return value * 2
-
-# result = {
-    # x: func(x) for x in original_list
-# }
-
-# result = []
-# for x in original_list:
-    # result.append(func(x))
-
 _INT_PARAMETERS = [
     'RES_BUF_FRAMES',
     'RES_BUF_HEIGHT',
@@ -100,7 +82,6 @@ def _make_int_parser(name: str) -> _ParserFunction:
     def parse(result: StradViewData, tokens: List[str]):
         value = int(tokens[0])
         setattr(result, attr_name, value)
-
     return parse
 
 
@@ -130,7 +111,6 @@ def _make_string_parser(name: str) -> _ParserFunction:
     def parse(result: StradViewData, tokens: List[str]):
         value = tokens[0]
         setattr(result, attr_name, value)
-
     return parse
 
 
