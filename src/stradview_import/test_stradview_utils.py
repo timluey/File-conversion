@@ -1,9 +1,12 @@
 import os
 import unittest
-from stradview_utils import parse_stradview_file
+from stradview_import.stradview_utils import parse_stradview_file
 
 
 class TestStradviewUtils(unittest.TestCase):
+    def test_raises_error_if_file_doesnt_exist(self):
+        pass
+
     def test_parse_stradview_file(self):
         test_file = 'case3.sw'
         test_file_name = os.path.join(os.getcwd(), 'test_data', test_file)

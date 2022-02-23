@@ -7,7 +7,7 @@ LONG_DESCRIPTION = ''
 # Setting up
 setup(
        # the name must match the folder name 'verysimplemodule'
-        name="FormusLabs_project", 
+        name="stradview-import", 
         version=VERSION,
         author="Timothy Luey",
         author_email="timothyluey@gmail.com",

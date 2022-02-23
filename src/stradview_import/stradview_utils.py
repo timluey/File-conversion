@@ -1,6 +1,6 @@
 import os
 from typing import Dict, List, Callable
-from stradview_types import StradViewContour, StradViewData, StradViewImage, StradViewObject
+from stradview_import.stradview_types import StradViewContour, StradViewData, StradViewImage, StradViewObject
 
 _INT_PARAMETERS = [
     'RES_BUF_FRAMES',
@@ -168,6 +168,15 @@ _PARSERS: Dict[str, _ParserFunction] = {
 
 
 def parse_stradview_file(path: str) -> StradViewData:
+    """
+        A description..
+
+        Args:
+            path (str): The path to...
+
+        Returns:
+            StradViewData: description
+    """
 
     with open(path) as file:
         token_lines = [line.split(' ') for line in file.readlines()]
