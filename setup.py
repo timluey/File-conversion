@@ -15,7 +15,7 @@ setup(
         long_description=LONG_DESCRIPTION,
         packages=find_packages(where='src'),
         package_dir={'': 'src'},
-        install_requires=[], # add any additional packages that 
+        install_requires=['attrs'], # add any additional packages that 
         # needs to be installed along with your package. Eg: 'caer'
         
         keywords=['python', 'first package'],
